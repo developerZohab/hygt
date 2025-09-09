@@ -12,6 +12,17 @@ SERPAPI_KEY = API_KEY
 # Output Excel file
 OUTPUT_FILE = "faculty_jobs.xlsx"
 
+# Predefined lists for dropdowns
+JOB_TITLES = [
+    "Professor", "Associate Professor", "Assistant Professor", "Lecturer", 
+    "Researcher", "Postdoctoral Fellow", "Dean", "Department Chair",
+    "Software Engineer", "Product Manager", "Data Scientist", "Web Developer"
+]
+COUNTRIES = [
+    "United States", "United Kingdom", "Canada", "Germany", "Australia", "Netherlands",
+    "France", "Singapore", "Switzerland", "Sweden"
+]
+
 def fetch_jobs(keyword):
     results_seen = set()
     jobs = []
@@ -57,28 +68,34 @@ def save_to_excel(jobs):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    jobs = []
+    results = {}
     show_no_results = False
     if request.method == 'POST':
-        job_title = request.form['job_title']
-        countries_input = request.form['countries']
-        countries = [country.strip() for country in countries_input.split(',')]
+        job_titles_input = request.form.get('job_title', '')
+        countries_input = request.form.get('countries', '')
+        job_titles = [title.strip() for title in job_titles_input.split(',') if title.strip()]
+        countries = [country.strip() for country in countries_input.split(',') if country.strip()]
 
-        all_jobs = []
-        for country in countries:
-            keyword = f"{job_title} jobs in {country}"
-            print(f"Searching for '{keyword}'...")
-            country_jobs = fetch_jobs(keyword)
-            if country_jobs:
-                all_jobs.extend(country_jobs)
+        all_jobs_for_excel = []
+        for job_title in job_titles:
+            jobs_by_country = {}
+            for country in countries:
+                keyword = f"{job_title} jobs in {country}"
+                print(f"Searching for '{keyword}'...")
+                country_jobs = fetch_jobs(keyword)
+                if country_jobs:
+                    jobs_by_country[country] = country_jobs
+                    all_jobs_for_excel.extend(country_jobs)
+            if jobs_by_country:
+                results[job_title] = jobs_by_country
         
-        if all_jobs:
-            save_to_excel(all_jobs)
-            jobs = all_jobs
+        if all_jobs_for_excel:
+            save_to_excel(all_jobs_for_excel)
         else:
             show_no_results = True
 
-    return render_template('index.html', jobs=jobs, show_no_results=show_no_results)
+    return render_template('index.html', results=results, show_no_results=show_no_results, 
+                           job_titles=JOB_TITLES, countries=COUNTRIES)
 
 if __name__ == '__main__':
     app.run(debug=True)
