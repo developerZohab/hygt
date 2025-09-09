@@ -25,8 +25,7 @@
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
+            width: 85%;
         }
         .header {
             text-align: center;
@@ -143,22 +142,24 @@
             font-family: 'Georgia', serif;
         }
         .results .job-title-header {
-            background-color: #e9ecef;
+            background-color: #a3b8cd;
             padding: 10px;
             border-radius: 8px;
             margin-top: 20px;
+            margin-bottom: 10px;
         }
         .results .country-header {
-            background-color: #f8f9fa;
+            background-color: #a3b8cd;
             padding: 8px;
             border-radius: 6px;
             margin-top: 10px;
+            margin-bottom: 10px;
         }
         .job {
             background-color: #fff;
             padding: 15px;
             border: 1px solid #eee;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 10px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             transition: transform 0.2s;
@@ -219,11 +220,11 @@
             <h2>Results</h2>
             {% for job_title, jobs_by_country in results.items() %}
                 <div class="job-title-header">
-                    <h3>{{ job_title }}</h3>
+                    <h3>Job title : {{ job_title }}</h3>
                 </div>
                 {% for country, jobs in jobs_by_country.items() %}
                     <div class="country-header">
-                        <h4>{{ country }} ({{ jobs|length }} links)</h4>
+                        <h4>Country name : {{ country }} ({{ jobs|length }} links)</h4>
                     </div>
                     {% for job in jobs %}
                     <div class="job">
