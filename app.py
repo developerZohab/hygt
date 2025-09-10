@@ -1,8 +1,8 @@
+from env import API_KEY
 from flask import Flask, render_template, request
 import requests
 import pandas as pd
 import os
-from env import API_KEY
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ OUTPUT_FILE = "faculty_jobs.xlsx"
 
 # Predefined lists for dropdowns
 JOB_TITLES = [
-    "Professor", "Associate Professor", "Assistant Professor", "Lecturer", 
+    "Professor", "Associate Professor", "Assistant Professor", "Lecturer",
     "Researcher", "Postdoctoral Fellow", "Dean", "Department Chair",
     "Software Engineer", "Product Manager", "Data Scientist", "Web Developer"
 ]
@@ -88,14 +88,11 @@ def index():
                     all_jobs_for_excel.extend(country_jobs)
             if jobs_by_country:
                 results[job_title] = jobs_by_country
-        
+
         if all_jobs_for_excel:
             save_to_excel(all_jobs_for_excel)
         else:
             show_no_results = True
 
-    return render_template('index.html', results=results, show_no_results=show_no_results, 
+    return render_template('index.html', results=results, show_no_results=show_no_results,
                            job_titles=JOB_TITLES, countries=COUNTRIES)
-
-if __name__ == '__main__':
-    app.run(debug=True)
